@@ -1,0 +1,7 @@
+langchain
+langchain-community
+langchain-ollama
+langchain-openai
+fastapi
+uvicorn
+beautifulsoup4
