@@ -1,6 +1,6 @@
 # Web Summarizer Agent (LangChain + FastAPI)
 
-A compact project that demonstrates how to build a polite web‑summarizing agent with LangChain, add short‑term conversation memory, and expose everything behind a simple API.
+A compact project that demonstrates how to build a web‑summarizing agent with LangChain, add short‑term conversation memory, and expose everything behind a simple API.
 
 ## What this project delivers
 
