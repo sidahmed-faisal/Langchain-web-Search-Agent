@@ -6,7 +6,7 @@ USER_AGENT = os.getenv("USER_AGENT")
 
 from langchain.agents import initialize_agent, Tool, AgentType
 from langchain_openai import ChatOpenAI
-from langchain_ollama import ChatOllama
+# from langchain_ollama import ChatOllama
 from langchain.chains.summarize import load_summarize_chain
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
@@ -14,8 +14,8 @@ from langchain.memory import ConversationBufferWindowMemory
 from langchain_community.document_loaders import WebBaseLoader
 import re
 
-llm = ChatOllama(model="phi4-mini:latest",temperature=0.1)  # Using ChatOllama for summarization
-# llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=0.1, )  # Alternative using OpenAI's model
+# llm = ChatOllama(model="phi4-mini:latest",temperature=0.1)  # Using ChatOllama for summarization
+llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=0.1, )  # Alternative using OpenAI's model
 
 
 memory = ConversationBufferWindowMemory(
