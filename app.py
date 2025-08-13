@@ -42,7 +42,6 @@ async def summarize_or_answer(req: InputRequest):
             topic = topic_from_summary(summary)
 
             return {
-                "type": "summary",
                 "summary": summary,
                 "main_topic": topic
             }
@@ -55,7 +54,6 @@ async def summarize_or_answer(req: InputRequest):
             logging.info(f"Answering follow-up question: {user_input}")
             response_text = answer_followup(user_input)
             return {
-                "type": "follow_up",
                 "question": user_input,
                 "response": response_text,
             }
