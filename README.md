@@ -221,3 +221,55 @@ This maps the container’s port `8000` to your host’s `8000` and passes envir
 > EXPOSE 8000
 > CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
 > ```
+
+---
+
+## Set up Ollama & Phi‑4 Mini (Local LLM)
+
+This project defaults to an Ollama model for fast, private local summaries.
+
+### 1) Install Ollama
+- **macOS / Linux (one‑liner):**
+  ```bash
+  curl -fsSL https://ollama.com/install.sh | sh
+  ```
+- **Windows:** Install from the Ollama website (GUI installer).
+
+After installing, verify:
+```bash
+ollama --version
+```
+
+### 2) Start the Ollama service
+On most systems the background service starts automatically. If needed, you can run:
+```bash
+ollama serve
+```
+
+### 3) Pull the Phi‑4 Mini model
+Pull the lightweight Phi‑4 Mini model:
+```bash
+# Primary tag used by this project
+ollama pull phi4-mini
+
+# (If your registry uses the alternate tag)
+# ollama pull phi4:mini
+```
+
+Test it quickly:
+```bash
+ollama run phi4-mini "Say hello from Phi‑4 Mini"
+```
+
+> **Model name in code:** By default the code expects an Ollama model named `phi4-mini` (the `:latest` tag is implied).  
+> If your local Ollama uses the `phi4:mini` tag instead, update the model string in `searchtool.py` accordingly.
+
+### 4) Environment variables
+Make sure your `.env` contains:
+```env
+USER_AGENT="myagent"
+# Only needed if switching to OpenAI in searchtool.py
+# OPENAI_API_KEY="sk-..."
+```
+
+Now you can run locally or with Docker as shown above.
