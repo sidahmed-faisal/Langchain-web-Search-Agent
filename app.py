@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import re , logging
 
-from searchtool import summarize_url, latest_summary, answer_followup, topic_from_summary
+from searchtool import summarize_url, latest_summary, answer_followup, topic_from_summary, get_agent, get_auothor
 
 app = FastAPI(title="Web Summarizer Agent")
 
@@ -28,6 +28,8 @@ URL_RE = re.compile(
 def is_valid_url(s: str) -> bool:
     return bool(URL_RE.search(s.strip()))
 
+agent = get_agent()  # Initialize the agent with memory
+
 @app.post("/summarize")
 async def summarize_or_answer(req: InputRequest):
     user_input = req.input.strip()
@@ -36,14 +38,18 @@ async def summarize_or_answer(req: InputRequest):
     if is_valid_url(user_input):
         try:
             logging.info(f"Summarizing URL: {user_input}")
-            summary = summarize_url(user_input)
+            summary = agent.run(user_input)
 
             logging.info(f"creating topic from summary")
             topic = topic_from_summary(summary)
 
+            logging.info(f"Extracting author from summary")
+            author = get_auothor(summary, user_input)
+
             return {
                 "summary": summary,
-                "main_topic": topic
+                "main_topic": topic,
+                "author": author,
             }
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Summarization failed: {str(e)}")

@@ -6,7 +6,7 @@ USER_AGENT = os.getenv("USER_AGENT")
 
 from langchain.agents import initialize_agent, Tool, AgentType
 from langchain_openai import ChatOpenAI
-# from langchain_ollama import ChatOllama
+from langchain_ollama import ChatOllama
 from langchain.chains.summarize import load_summarize_chain
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
@@ -14,7 +14,7 @@ from langchain.memory import ConversationBufferWindowMemory
 from langchain_community.document_loaders import WebBaseLoader
 import re
 
-# llm = ChatOllama(model="phi4-mini:latest",temperature=0.1)  # Using ChatOllama for summarization
+# llm = ChatOllama(model="gemma3:latest",temperature=0.1)  # Using ChatOllama for summarization
 llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=0.1, )  # Alternative using OpenAI's model
 
 
@@ -36,6 +36,27 @@ followup_memory = ConversationBufferWindowMemory(
     return_messages=False    
 )
 
+
+def get_auothor(summary: str, url: str) -> str:
+    """Extract the author from the summary or URL."""
+    author_template = """You are given a summary of a webpage from a url.
+    Give the author of the webpage.
+    the author can be a person or an organization.
+
+    Summary:
+    {summary}
+
+    url:
+    {url}
+
+    Author:"""
+
+    author_prompt = PromptTemplate(
+        template=author_template,
+        input_variables=["summary", "url"],
+    )
+    topic_chain = LLMChain(llm=llm, prompt=author_prompt, verbose=False)
+    return topic_chain.predict(summary=summary, url=url).strip()
 
 
 def summarize_url(url: str) -> str:
@@ -61,7 +82,7 @@ def summarize_tool_func(url: str) -> str:
 summarization_tool = Tool(
     name="Web Summarizer",
     func=summarize_tool_func,
-    description="Use this tool to summarize a webpage from a given URL."
+    description="Use this tool to summarize a webpage from a given URL which is correct."
 )
 
 # Initialize agent with memory
@@ -71,7 +92,8 @@ def get_agent():
         llm=llm,
         agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
         memory=memory,
-        verbose=True
+        verbose=True,
+        handle_parsing_errors=True
     )
 
 
