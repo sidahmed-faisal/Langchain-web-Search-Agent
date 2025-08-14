@@ -38,8 +38,12 @@ async def summarize_or_answer(req: InputRequest):
     if is_valid_url(user_input):
         try:
             logging.info(f"Summarizing URL: {user_input}")
-            summary = agent.run(user_input)
+            # Use this instead of you want agentic behavior
+            # summary = agent.run(user_input)
 
+            # Use this if you want to use the summarization tool directly
+            summary = summarize_url(user_input)
+            
             logging.info(f"creating topic from summary")
             topic = topic_from_summary(summary)
 
